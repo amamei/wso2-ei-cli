@@ -1,0 +1,27 @@
+{
+    "name": "wso2-ei-cli",
+    "version": "1.0.2",
+    "description": "Minimist and stable wso2 integrator carbon app builder",
+    "maintainers": ["andrian.mamei@gmail.com"],
+    "main": "app/index.js",
+    "scripts": {
+        "build": "babel src -d app"
+    },
+    "bin": {
+        "mi": "./app/index.js",
+        "integrator": "./app/index.js"
+    },
+    "keywords": ["esb-cli", "esb", "carbon-app", "car", "integration", "api", "esb", "wso2"],
+    "author": "andrian.mamei@gmail.com",
+    "license": "ISC",
+    "dependencies": {
+        "archiver": "^3.1.1",
+        "minimist": "^1.2.0",
+        "rimraf": "^3.0.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.7.4",
+        "@babel/core": "^7.7.4",
+        "@babel/preset-env": "^7.7.4"
+    }
+}
