@@ -53,3 +53,6 @@ Project structure
 ### 1.0.2
 * Added posibility to set output CAR name
 * Added more command actions
+
+### 1.0.3
+* Added support for dataservices

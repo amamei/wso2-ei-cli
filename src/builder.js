@@ -14,10 +14,10 @@ class Builder {
 		this.MetaTypes = {
 			"synapse-config": {
 				templates: "synapse/template",
-				endpoints: "synapse/endpoint",
 				sequences: "synapse/sequence",
 				api: "synapse/api",
-				"proxy-services": "synapse/proxy-service"
+				"proxy-services": "synapse/proxy-service",
+				dataservice: "service/dataservice"
 			},
 			registry: {
 				wsdls: "application/wsdl+xml",
