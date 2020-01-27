@@ -2,6 +2,10 @@
     "name": "wso2-ei-cli",
     "version": "1.0.3",
     "description": "Minimist and stable wso2 integrator carbon app builder",
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/amamei/wso2-ei-cli.git"
+    },
     "maintainers": [
         "andrian.mamei@gmail.com"
     ],
