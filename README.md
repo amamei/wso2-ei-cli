@@ -22,6 +22,7 @@ Project structure
 |     |-- endpoints
 |     |-- policies
 |     |-- scripts
+|     |-- swaggers
 |     |-- wsdls
 |     |-- xslts
 |
@@ -37,6 +38,7 @@ Project structure
       |-- endpoints
       |-- policies
       |-- scripts
+      |-- swaggers
       |-- wsdls
       |-- xslts
 ```
@@ -56,3 +58,6 @@ Project structure
 
 ### 1.0.3
 * Added support for dataservices
+
+### 1.0.4
+* Add swagger registry file type

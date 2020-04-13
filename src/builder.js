@@ -21,6 +21,7 @@ class Builder {
 			},
 			registry: {
 				wsdls: "application/wsdl+xml",
+				swaggers: "text/plain",
 				endpoints: "application/vnd.wso2.esb.endpoint",
 				policies: "application/wspolicy+xml",
 				xslts: "application/xslt+xml",
