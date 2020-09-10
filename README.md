@@ -64,3 +64,29 @@ Project structure
 
 ### 1.1.0
 * Add environment dependency
+
+  Project should contain env.json file with variables
+
+  Usage example:
+
+  __{$ProjectHome}/registry/endpoints/GetTime.xml__
+  ``` xml
+  <endpoint name="GetTime" xmlns="http://ws.apache.org/ns/synapse">
+      <http method="GET" uri-template="{{__endpoint_worldtime_host__}}/api/timezone/{{__timezone__}}" />
+  </endpoint>
+  ```
+
+  __env.json__
+  ``` json
+  {
+      "endpoint_worldtime_host": "http://worldtimeapi.org",
+      "timezone": "Europe/London"
+  }
+  ```
+
+  __Result__
+  ``` xml
+  <endpoint name="GetTime" xmlns="http://ws.apache.org/ns/synapse">
+      <http method="GET" uri-template="http://worldtimeapi.org/api/timezone/Europe/London" />
+  </endpoint>
+  ```

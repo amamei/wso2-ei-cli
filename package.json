@@ -1,21 +1,21 @@
 {
     "name": "wso2-ei-cli",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "description": "Minimist and stable wso2 integrator carbon app builder",
     "repository": {
-        "type" : "git",
-        "url" : "https://github.com/amamei/wso2-ei-cli.git"
+        "type": "git",
+        "url": "https://github.com/amamei/wso2-ei-cli.git"
     },
     "maintainers": [
         "andrian.mamei@gmail.com"
     ],
-    "main": "app/index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "build": "babel src -d app"
+        "build": "babel src --out-dir  dist"
     },
     "bin": {
-        "mi": "./app/index.js",
-        "integrator": "./app/index.js"
+        "mi": "./dist/index.js",
+        "integrator": "./dist/index.js"
     },
     "keywords": [
         "esb-cli",
@@ -30,13 +30,13 @@
     "author": "andrian.mamei@gmail.com",
     "license": "ISC",
     "dependencies": {
-        "archiver": "^3.1.1",
+        "archiver": "^5.0.0",
         "minimist": "^1.2.5",
-        "rimraf": "^3.0.0"
+        "rimraf": "^3.0.2"
     },
     "devDependencies": {
-        "@babel/cli": "^7.7.4",
-        "@babel/core": "^7.7.4",
-        "@babel/preset-env": "^7.7.4"
+        "@babel/cli": "^7.11.6",
+        "@babel/core": "^7.11.6",
+        "@babel/preset-env": "^7.11.5"
     }
 }

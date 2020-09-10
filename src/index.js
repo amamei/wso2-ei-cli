@@ -7,7 +7,7 @@ if (!args.e) args.e = "prod";
 
 switch (actions[0]) {
     case "new":
-        Builder.Create(process.cwd(), args.t);
+        Builder.CreateProject(process.cwd(), args.t);
         break;
     case "build":
         Builder.Build(process.cwd(), args.t, args.e, args.o);

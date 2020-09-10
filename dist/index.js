@@ -12,7 +12,7 @@ if (!args.e) args.e = "prod";
 
 switch (actions[0]) {
   case "new":
-    _builder["default"].Create(process.cwd(), args.t);
+    _builder["default"].CreateProject(process.cwd(), args.t);
 
     break;
 
