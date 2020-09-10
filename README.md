@@ -61,3 +61,6 @@ Project structure
 
 ### 1.0.4
 * Add swagger registry file type
+
+### 1.1.0
+* Add environment dependency
