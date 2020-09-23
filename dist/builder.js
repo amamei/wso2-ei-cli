@@ -53,7 +53,10 @@ var Builder = /*#__PURE__*/function () {
       },
       registry: {
         wsdls: 'application/wsdl+xml',
-        swaggers: 'text/plain',
+        swaggers: {
+          "json": "application/json",
+          "yaml": "application/yaml"
+        },
         endpoints: 'application/vnd.wso2.esb.endpoint',
         policies: 'application/wspolicy+xml',
         xslts: 'application/xslt+xml',
@@ -121,7 +124,16 @@ var Builder = /*#__PURE__*/function () {
         }
       });
 
-      content = this.XmlHeaderTemplate + this.RegistryInfoTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version).replace(/\$\{type\}/g, type).replace(/\$\{extension\}/g, extension).replace(/\$\{mediaType\}/g, this.MetaTypes.registry[type]);
+      var mediaType = this.MetaTypes.registry[type];
+
+      if (this.MetaTypes.registry[type][extension.substring(1)]) {
+        mediaType = this.MetaTypes.registry[type][extension.substring(1)];
+      }
+
+      console.log("media type ======>>>> ".concat(type, " | ").concat(extension, " | ").concat(mediaType));
+      console.log("media type ======>>>> ".concat(this.MetaTypes.registry[type]));
+      console.log("media type ======>>>> ".concat(this.MetaTypes.registry[type][extension]));
+      content = this.XmlHeaderTemplate + this.RegistryInfoTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version).replace(/\$\{type\}/g, type).replace(/\$\{extension\}/g, extension).replace(/\$\{mediaType\}/g, mediaType);
 
       _fs["default"].writeFile(_path["default"].join(this.outputTemp, artifact, "registry-info.xml"), content, function (err) {
         if (err) {

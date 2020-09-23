@@ -20,7 +20,10 @@ class Builder {
             },
             registry: {
                 wsdls: 'application/wsdl+xml',
-                swaggers: 'text/plain',
+                swaggers: {
+                    "json": "application/json",
+                    "yaml": "application/yaml"
+                },
                 endpoints: 'application/vnd.wso2.esb.endpoint',
                 policies: 'application/wspolicy+xml',
                 xslts: 'application/xslt+xml',
@@ -75,12 +78,18 @@ class Builder {
             }
         });
 
+        let mediaType = this.MetaTypes.registry[type];
+
+        if (this.MetaTypes.registry[type][extension.substring(1)]) {
+            mediaType = this.MetaTypes.registry[type][extension.substring(1)];
+        }
+
         content = this.XmlHeaderTemplate +
             this.RegistryInfoTemplate.replace(/\$\{artifact\}/g, artifactName)
                 .replace(/\$\{version\}/g, this.version)
                 .replace(/\$\{type\}/g, type)
                 .replace(/\$\{extension\}/g, extension)
-                .replace(/\$\{mediaType\}/g, this.MetaTypes.registry[type]);
+                .replace(/\$\{mediaType\}/g, mediaType);
         fs.writeFile(path.join(this.outputTemp, artifact, "registry-info.xml"), content, (err) => {
             if (err) {
                 console.log(err);

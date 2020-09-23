@@ -45,22 +45,8 @@ Project structure
 
 ## Changelog
 
-### 1.0.0
-* Create project
-* Build carbon application
-
-### 1.0.1
-* Fixed usage example
-
-### 1.0.2
-* Added posibility to set output CAR name
-* Added more command actions
-
-### 1.0.3
-* Added support for dataservices
-
-### 1.0.4
-* Add swagger registry file type
+### 1.1.1
+* Set swagger mediaType depends of file extension
 
 ### 1.1.0
 * Add environment dependency
@@ -84,9 +70,26 @@ Project structure
   }
   ```
 
+### 1.0.4
+* Add swagger registry file type
+
   __Result__
   ``` xml
   <endpoint name="GetTime" xmlns="http://ws.apache.org/ns/synapse">
       <http method="GET" uri-template="http://worldtimeapi.org/api/timezone/Europe/London" />
   </endpoint>
   ```
+
+### 1.0.3
+* Added support for dataservices
+
+### 1.0.2
+* Added posibility to set output CAR name
+* Added more command actions
+
+### 1.0.1
+* Fixed usage example
+
+### 1.0.0
+* Create project
+* Build carbon application

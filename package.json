@@ -1,6 +1,6 @@
 {
     "name": "wso2-ei-cli",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Minimist and stable wso2 integrator carbon app builder",
     "repository": {
         "type": "git",
