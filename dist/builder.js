@@ -40,8 +40,8 @@ var Builder = /*#__PURE__*/function () {
     _classCallCheck(this, Builder);
 
     this.XmlHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>';
-    this.SynapseArtifactTemplate = '<?xml version="1.0" encoding="UTF-8"?><artifact name="${artifact}" version="${version}" type="${media-type}" serverRole="EnterpriseServiceBus"><file>${artifact}.xml</file></artifact>';
-    this.RegistryArtifactTemplate = '<artifact name="${artifact}" version="${version}" type="registry/resource" serverRole="EnterpriseServiceBus"><file>registry-info.xml</file></artifact>';
+    this.SynapseArtifactTemplate = '<?xml version="1.0" encoding="UTF-8"?><artifact name="${artifact}" version="${version}" type="${media-type}" serverRole="${serverRole}"><file>${artifact}${extension}</file></artifact>';
+    this.RegistryArtifactTemplate = '<artifact name="${artifact}" version="${version}" type="registry/resource" serverRole="${serverRole}"><file>registry-info.xml</file></artifact>';
     this.RegistryInfoTemplate = '<resources><item><file>${artifact}${extension}</file><path>/_system/governance/${type}</path><mediaType>${mediaType}</mediaType></item></resources>';
     this.MetaTypes = {
       'synapse-config': {
@@ -62,6 +62,10 @@ var Builder = /*#__PURE__*/function () {
         xslts: 'application/xslt+xml',
         scripts: 'application/javascript'
       }
+    };
+    this.ServerRoles = {
+      dataservice: "DataServicesServer",
+      "default": "EnterpriseServiceBus"
     };
     this.version = '1.0.0';
     this.root = null;
@@ -94,6 +98,8 @@ var Builder = /*#__PURE__*/function () {
       var artifactName = _path["default"].basename(file, extension);
 
       var artifact = artifactName + "_" + this.version;
+      var serverRole = this.ServerRoles["default"];
+      if (type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
 
       _helper["default"].EnsureFolderExists(_path["default"].join(this.outputTemp, artifact));
 
@@ -101,7 +107,7 @@ var Builder = /*#__PURE__*/function () {
 
       var fileContent = _fs["default"].readFileSync(file, 'utf8');
 
-      var envVarFilePath = _path["default"].join(this.root, this.tenant, "env.json");
+      var envVarFilePath = _path["default"].join(this.root, this.tenant, "env".concat(this.env ? '.' + this.env : '', ".json"));
 
       if (_fs["default"].existsSync(envVarFilePath)) {
         var templates = _toConsumableArray(new Set(fileContent.match(/\{\{__[\w\.]+__\}\}/g)));
@@ -115,7 +121,7 @@ var Builder = /*#__PURE__*/function () {
 
       _fs["default"].writeFileSync(_path["default"].join(this.outputTemp, artifact, "resources", artifactName + extension), fileContent);
 
-      var content = this.XmlHeaderTemplate + this.RegistryArtifactTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version);
+      var content = this.XmlHeaderTemplate + this.RegistryArtifactTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{serverRole\}/g, serverRole).replace(/\$\{version\}/g, this.version);
 
       _fs["default"].writeFile(_path["default"].join(this.outputTemp, artifact, "artifact.xml"), content, function (err) {
         if (err) {
@@ -130,9 +136,6 @@ var Builder = /*#__PURE__*/function () {
         mediaType = this.MetaTypes.registry[type][extension.substring(1)];
       }
 
-      console.log("media type ======>>>> ".concat(type, " | ").concat(extension, " | ").concat(mediaType));
-      console.log("media type ======>>>> ".concat(this.MetaTypes.registry[type]));
-      console.log("media type ======>>>> ".concat(this.MetaTypes.registry[type][extension]));
       content = this.XmlHeaderTemplate + this.RegistryInfoTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version).replace(/\$\{type\}/g, type).replace(/\$\{extension\}/g, extension).replace(/\$\{mediaType\}/g, mediaType);
 
       _fs["default"].writeFile(_path["default"].join(this.outputTemp, artifact, "registry-info.xml"), content, function (err) {
@@ -150,6 +153,8 @@ var Builder = /*#__PURE__*/function () {
       var artifactName = _path["default"].basename(file, extension);
 
       var artifact = artifactName + "_" + this.version;
+      var serverRole = this.ServerRoles["default"];
+      if (type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
 
       _helper["default"].EnsureFolderExists(_path["default"].join(this.outputTemp, artifact));
 
@@ -157,7 +162,7 @@ var Builder = /*#__PURE__*/function () {
 
       var templates = _toConsumableArray(new Set(fileContent.match(/\{\{__[\w\.]+__\}\}/g)));
 
-      var envVarFilePath = _path["default"].join(this.root, this.tenant, "env.json");
+      var envVarFilePath = _path["default"].join(this.root, this.tenant, "env".concat(this.env ? '.' + this.env : '', ".json"));
 
       if (_fs["default"].existsSync(envVarFilePath)) {
         var envVars = JSON.parse(_fs["default"].readFileSync(envVarFilePath, 'utf8'));
@@ -169,7 +174,7 @@ var Builder = /*#__PURE__*/function () {
 
       _fs["default"].writeFileSync(_path["default"].join(this.outputTemp, artifact, artifactName + extension), fileContent);
 
-      var content = this.SynapseArtifactTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version).replace(/\$\{media\-type\}/g, this.MetaTypes["synapse-config"][type]);
+      var content = this.SynapseArtifactTemplate.replace(/\$\{artifact\}/g, artifactName).replace(/\$\{version\}/g, this.version).replace(/\$\{serverRole\}/g, serverRole).replace(/\$\{extension\}/g, extension).replace(/\$\{media\-type\}/g, this.MetaTypes["synapse-config"][type]);
 
       _fs["default"].writeFile(_path["default"].join(this.outputTemp, artifact, "artifact.xml"), content, function (err) {
         if (err) {
@@ -226,7 +231,7 @@ var Builder = /*#__PURE__*/function () {
 
           var fileName = _path["default"].basename(file, extension);
 
-          _this2.BuildArtifactsAddDependency(fileName);
+          _this2.BuildArtifactsAddDependency(fileName, type);
 
           _this2.BuildSynapseArtifact(_path["default"].join(_this2.root, projectName, "synapse-config", type, _path["default"].basename(file)), type);
         });
@@ -251,8 +256,11 @@ var Builder = /*#__PURE__*/function () {
     }
   }, {
     key: "BuildArtifactsAddDependency",
-    value: function BuildArtifactsAddDependency(artifact) {
-      _fs["default"].appendFileSync(_path["default"].join(this.outputTemp, "artifacts.xml"), "<dependency artifact=\"".concat(artifact, "\" version=\"").concat(this.version, "\" include=\"true\" serverRole=\"EnterpriseServiceBus\"/>"));
+    value: function BuildArtifactsAddDependency(artifact, type) {
+      var serverRole = this.ServerRoles["default"];
+      if (type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
+
+      _fs["default"].appendFileSync(_path["default"].join(this.outputTemp, "artifacts.xml"), "<dependency artifact=\"".concat(artifact, "\" version=\"").concat(this.version, "\" include=\"true\" serverRole=\"").concat(serverRole, "\"/>"));
     }
   }, {
     key: "BuildArtifactsEnd",

@@ -35,24 +35,33 @@ Project structure
    |  |-- templates
    |
    |--+ registry
-      |-- endpoints
-      |-- policies
-      |-- scripts
-      |-- swaggers
-      |-- wsdls
-      |-- xslts
+   |  |-- endpoints
+   |  |-- policies
+   |  |-- scripts
+   |  |-- swaggers
+   |  |-- wsdls
+   |  |-- xslts
+   |--- env.json
+   |--- env.dev.json
+   |--- env.staging.json
 ```
 
 ## Changelog
 
-### 1.1.1
+### 1.1.4
+* Add environment specific env.json file.\
+  Example: env.dev.json, env.staging.json\
+  Default is env.json file.
+
+### 1.1.3
+* Fix dataservices building
+
+### 1.1.2
 * Set swagger mediaType depends of file extension
 
 ### 1.1.0
-* Add environment dependency
-
-  Project should contain env.json file with variables
-
+* Add environment dependency\
+  Project should contain env.json file with variables\
   Usage example:
 
   __{$ProjectHome}/registry/endpoints/GetTime.xml__
@@ -71,8 +80,7 @@ Project structure
   ```
 
 ### 1.0.4
-* Add swagger registry file type
-
+* Add swagger registry file type\
   __Result__
   ``` xml
   <endpoint name="GetTime" xmlns="http://ws.apache.org/ns/synapse">

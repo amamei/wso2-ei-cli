@@ -7,8 +7,8 @@ import helper from "./helper";
 class Builder {
     constructor() {
         this.XmlHeaderTemplate = '<?xml version="1.0" encoding="UTF-8"?>';
-        this.SynapseArtifactTemplate = '<?xml version="1.0" encoding="UTF-8"?><artifact name="${artifact}" version="${version}" type="${media-type}" serverRole="EnterpriseServiceBus"><file>${artifact}.xml</file></artifact>';
-        this.RegistryArtifactTemplate = '<artifact name="${artifact}" version="${version}" type="registry/resource" serverRole="EnterpriseServiceBus"><file>registry-info.xml</file></artifact>';
+        this.SynapseArtifactTemplate = '<?xml version="1.0" encoding="UTF-8"?><artifact name="${artifact}" version="${version}" type="${media-type}" serverRole="${serverRole}"><file>${artifact}${extension}</file></artifact>';
+        this.RegistryArtifactTemplate = '<artifact name="${artifact}" version="${version}" type="registry/resource" serverRole="${serverRole}"><file>registry-info.xml</file></artifact>';
         this.RegistryInfoTemplate = '<resources><item><file>${artifact}${extension}</file><path>/_system/governance/${type}</path><mediaType>${mediaType}</mediaType></item></resources>';
         this.MetaTypes = {
             'synapse-config': {
@@ -30,6 +30,10 @@ class Builder {
                 scripts: 'application/javascript',
             },
         };
+        this.ServerRoles = {
+            dataservice: "DataServicesServer",
+            default: "EnterpriseServiceBus"
+        }
         this.version = '1.0.0';
         this.root = null;
         this.env = null;
@@ -51,11 +55,14 @@ class Builder {
         var artifactName = path.basename(file, extension);
         var artifact = artifactName + "_" + this.version;
 
+        var serverRole = this.ServerRoles.default;
+        if(type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
+
         helper.EnsureFolderExists(path.join(this.outputTemp, artifact));
         helper.EnsureFolderExists(path.join(this.outputTemp, artifact, "resources"));
 
         let fileContent = fs.readFileSync(file, 'utf8');
-        const envVarFilePath = path.join(this.root, this.tenant, `env.json`);
+        const envVarFilePath = path.join(this.root, this.tenant, `env${this.env ? '.' + this.env : ''}.json`);
         if (fs.existsSync(envVarFilePath)) {
             let templates = [...new Set(fileContent.match(/\{\{__[\w\.]+__\}\}/g))];
             const envVars = JSON.parse(fs.readFileSync(envVarFilePath, 'utf8'));
@@ -70,6 +77,7 @@ class Builder {
         var content = this.XmlHeaderTemplate +
             this.RegistryArtifactTemplate
                 .replace(/\$\{artifact\}/g, artifactName)
+                .replace(/\$\{serverRole\}/g, serverRole)
                 .replace(/\$\{version\}/g, this.version);
         fs.writeFile(path.join(this.outputTemp, artifact, "artifact.xml"), content, (err) => {
             if (err) {
@@ -104,11 +112,14 @@ class Builder {
         var artifactName = path.basename(file, extension);
         var artifact = artifactName + "_" + this.version;
 
+        var serverRole = this.ServerRoles.default;
+        if(type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
+
         helper.EnsureFolderExists(path.join(this.outputTemp, artifact));
 
         let fileContent = fs.readFileSync(file, 'utf8');
         let templates = [...new Set(fileContent.match(/\{\{__[\w\.]+__\}\}/g))];
-        const envVarFilePath = path.join(this.root, this.tenant, `env.json`);
+        const envVarFilePath = path.join(this.root, this.tenant, `env${this.env ? '.' + this.env : ''}.json`);
         if (fs.existsSync(envVarFilePath)) {
             const envVars = JSON.parse(fs.readFileSync(envVarFilePath, 'utf8'));
             templates.forEach(template => {
@@ -122,6 +133,8 @@ class Builder {
         var content = this.SynapseArtifactTemplate
             .replace(/\$\{artifact\}/g, artifactName)
             .replace(/\$\{version\}/g, this.version)
+            .replace(/\$\{serverRole\}/g, serverRole)
+            .replace(/\$\{extension\}/g, extension)
             .replace(/\$\{media\-type\}/g, this.MetaTypes["synapse-config"][type]);
         fs.writeFile(path.join(this.outputTemp, artifact, "artifact.xml"), content, (err) => {
             if (err) {
@@ -166,7 +179,7 @@ class Builder {
                     if (!extension || extension.length === 0 || fs.existsSync(path.join(this.root, projectName, "synapse-config", type, this.env, file)))
                         return;
                     var fileName = path.basename(file, extension);
-                    this.BuildArtifactsAddDependency(fileName);
+                    this.BuildArtifactsAddDependency(fileName, type);
                     this.BuildSynapseArtifact(path.join(this.root, projectName, "synapse-config", type, path.basename(file)), type);
                 });
             if (fs.existsSync(path.join(this.root, projectName, "synapse-config", type, this.env))) {
@@ -187,10 +200,12 @@ class Builder {
         );
     }
 
-    BuildArtifactsAddDependency(artifact) {
+    BuildArtifactsAddDependency(artifact, type) {
+        var serverRole = this.ServerRoles.default;
+        if(type && this.ServerRoles[type]) serverRole = this.ServerRoles[type];
         fs.appendFileSync(
             path.join(this.outputTemp, "artifacts.xml"),
-            `<dependency artifact="${artifact}" version="${this.version}" include="true" serverRole="EnterpriseServiceBus"/>`
+            `<dependency artifact="${artifact}" version="${this.version}" include="true" serverRole="${serverRole}"/>`
         );
     }
 
