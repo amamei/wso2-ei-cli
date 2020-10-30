@@ -48,6 +48,9 @@ Project structure
 
 ## Changelog
 
+### 1.1.5
+* Bug fix
+
 ### 1.1.4
 * Add environment specific env.json file.\
   Example: env.dev.json, env.staging.json\

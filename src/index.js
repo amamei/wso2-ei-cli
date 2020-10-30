@@ -3,7 +3,7 @@ import Builder from "./builder";
 const args = require("minimist")(process.argv.slice(2));
 var actions = args._;
 
-if (!args.e) args.e = "prod";
+if (!args.e) args.e = "";
 
 switch (actions[0]) {
     case "new":
